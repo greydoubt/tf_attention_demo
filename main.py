@@ -7,9 +7,18 @@ from utils.attention import (
     multiply_scores_with_values,
     sum_weighted_values,
 )
+import traceback
+import contextlib
 
-
-# https://www.tensorflow.org/guide/function
+@contextlib.contextmanager
+def assert_raises(error_class):
+    try:
+        yield
+    except error_class as e:
+        traceback.print_exc()
+        pass
+    else:
+        raise AssertionError(f"Expected {error_class} to be raised, but no exception was raised.")
 
 @tf.function
 def main():
@@ -46,4 +55,5 @@ def main():
     print(output.numpy())
 
 if __name__ == "__main__":
-    main()
+    with assert_raises(AssertionError):
+        main()
